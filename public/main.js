@@ -58,17 +58,18 @@ var snake, tail;
         ctx.fillText(refresh_text, 50, ctx.canvas.height-25);
     }
     var drawSnake = function(){
-    	var length=4;
+    	//var length=2;
     	snake=[];
-    	for(var i=length; i>=0; i--){
+    	/*for(var i=length; i>=0; i--){
     		snake.push({x:i, y:0});
-    	}
+    	}*/
+    	snake.push({x:10, y:10});
     }
     var randomizeFood = function() {
           food = {
             //Generate random numbers.
-            x: Math.floor(Math.random() * ctx.canvas.width),
-            y: Math.floor(Math.random() * ctx.canvas.height)
+            x: Math.floor(Math.random()*ctx.canvas.width),
+            y: Math.floor(Math.random()*ctx.canvas.height)
         }
         
         //Look at the position of the snake's body.
@@ -76,9 +77,9 @@ var snake, tail;
             var snakeX = snake[i].x;
             var snakeY = snake[i].y;
             
-             if (food.x===snakeX || food.y === snakeY || food.y === snakeY && food.x===snakeX) {
-                food.x = Math.floor((Math.random() * 30) + 1);
-                food.y = Math.floor((Math.random() * 30) + 1);
+             if (food.x===snakeX || food.y === snakeY) {
+                food.x = Math.floor(Math.random()*ctx.canvas.width);
+                food.y = Math.floor(Math.random()*ctx.canvas.height);
             }
         }
     }
@@ -93,7 +94,7 @@ var snake, tail;
     	ctx.fillStyle = '#032f3b';
     	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     	
-debugger;
+		//debugger;
 	    var snakeX = snake[0].x;
 	    var snakeY = snake[0].y;
 
@@ -127,7 +128,8 @@ debugger;
 	    }
 
 	    //If the snake eats food it becomes longer and this means that, in this case, you shouldn't pop out the last element of the array.
-	    if ((snakeX >= food.x-snakeSize && snakeX <= food.x+snakeSize) && (snakeY >= food.y-snakeSize && snakeY <= food.y+snakeSize)) {
+	    /*if ((snakeX >= food.x-snakeSize && snakeX <= food.x+snakeSize) && (snakeY >= food.y-snakeSize && snakeY <= food.y+snakeSize)) {*/
+	    if (snakeX == food.x && snakeY == food.y) {
 	        //Create a new square instead of moving the tail.
 	        tail = {
 	            x: snakeX,
@@ -149,7 +151,10 @@ debugger;
 
 	    //For each element of the array create a square using the bodySnake function we created before.
 	    for (var i = 0; i < snake.length; i++) {
-	    	if(snake.length>1)debugger;
+	    	/*if(snake[1].x!==snake[0].x)
+	        	bodySnake(snake[i].x+(i*snakeSize), snake[i].y);
+	        else
+	        	bodySnake(snake[i].x, snake[i].y+(i*snakeSize));*/
 	        bodySnake(snake[i].x, snake[i].y);
 	    }
 
@@ -160,7 +165,7 @@ debugger;
 	}
     drawSnake();
     randomizeFood();
-    gameloop = setInterval(paint, 5);
+    gameloop = setInterval(paint, 80);
     //createFood(food.x, food.y);
     //scoreText();
     /*bodySnake(5,5);
