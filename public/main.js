@@ -1,5 +1,6 @@
-var score = 0, snakeSize=20;
+var score = 0, pre_score=0, snakeSize=20;
 var snake, tail;
+var complexity = 1;
 (function draw(){
 	var ctx = document.getElementById('stage').getContext('2d');
 	ctx.canvas.width  = window.innerWidth*0.98;
@@ -37,6 +38,7 @@ var snake, tail;
 		}
 	}
 
+	// create square
 	var bodySnake = function(x, y){
 		ctx.fillStyle = '#268bd2';
         ctx.fillRect(x, y, snakeSize, snakeSize);
@@ -58,6 +60,7 @@ var snake, tail;
         ctx.fillText(refresh_text, 50, ctx.canvas.height-25);
     }
     var drawSnake = function(){
+    	// initialize snake array
     	//var length=2;
     	snake=[];
     	/*for(var i=length; i>=0; i--){
@@ -67,17 +70,16 @@ var snake, tail;
     }
     var randomizeFood = function() {
           food = {
-            //Generate random numbers.
             x: Math.floor(Math.random()*ctx.canvas.width),
             y: Math.floor(Math.random()*ctx.canvas.height)
         }
         
-        //Look at the position of the snake's body.
+        //check for snakes' body
         for (var i=0; i>snake.length; i++) {
             var snakeX = snake[i].x;
             var snakeY = snake[i].y;
             
-             if (food.x===snakeX || food.y === snakeY) {
+             if (food.x == snakeX || food.y == snakeY) {
                 food.x = Math.floor(Math.random()*ctx.canvas.width);
                 food.y = Math.floor(Math.random()*ctx.canvas.height);
             }
@@ -85,7 +87,7 @@ var snake, tail;
     }
     var checkCollision = function(x, y, array) {
         for(var i = 0; i < array.length; i++) {
-            if(array[i].x === x && array[i].y === y)
+            if(array[i].x == x && array[i].y == y)
             return true;
         } 
         return false;
@@ -98,28 +100,19 @@ var snake, tail;
 	    var snakeX = snake[0].x;
 	    var snakeY = snake[0].y;
 
-	    /*
-	    Make the snake move.
-	    Use a variable ('direction') to control the movement.
-	    To move the snake, pop out the last element of the array and shift it on the top as first element.
-	    */
+	    //movement, update snake coordinate
 	    if (direction == 'right') {
-	        snakeX++;
+	        snakeX+=complexity*snakeSize;
 	    } else if (direction == 'left') {
-	        snakeX--;
+	        snakeX-=complexity*snakeSize;
 	    } else if (direction == 'up') {
-	        snakeY--;
+	        snakeY-=complexity*snakeSize;
 	    } else if (direction == 'down') {
-	        snakeY++;
+	        snakeY+=complexity*snakeSize;
 	    }
 
-	    /*
-	    If the snake touches the canvas path or itself, it will die!
-	    Therefore if x or y of an element of the snake, don't fit inside the canvas, the game will be stopped.
-	    If the check_collision is true, it means the the snake has crashed on its body itself, then the game will be stopped again. 
-	    */
-	    if (snakeX == -1 || snakeX == ctx.canvas.width || snakeY == -1 || snakeY == ctx.canvas.height || checkCollision(snakeX, snakeY, snake)) {
-	        //Stop the game.
+	    //boundary conditions to stop
+	    if (snakeX < 0 || snakeX > ctx.canvas.width || snakeY < 0 || snakeY > ctx.canvas.height || checkCollision(snakeX, snakeY, snake)) {
 	        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 	        scoreText();
 	        refreshText();
@@ -127,29 +120,28 @@ var snake, tail;
 	        return;
 	    }
 
-	    //If the snake eats food it becomes longer and this means that, in this case, you shouldn't pop out the last element of the array.
-	    /*if ((snakeX >= food.x-snakeSize && snakeX <= food.x+snakeSize) && (snakeY >= food.y-snakeSize && snakeY <= food.y+snakeSize)) {*/
-	    if (snakeX == food.x && snakeY == food.y) {
-	        //Create a new square instead of moving the tail.
+	    if ((snakeX >= food.x-snakeSize && snakeX <= food.x+snakeSize) && (snakeY >= food.y-snakeSize && snakeY <= food.y+snakeSize)) {
+	    //if (snakeX == food.x && snakeY == food.y) {
+	        //new square instead of moving the tail.
 	        tail = {
 	            x: snakeX,
 	            y: snakeY
 	        };
 	        score++;
 
-	        //Create new food.
+	        //new food.
 	        randomizeFood();
 	    } else {
-	    	//pop
+	    	//pop and paint ahead
 	    	tail = snake.pop();
 	    	tail.x = snakeX;
         	tail.y = snakeY;
 	    }
 
-	    //Puts the tail as the first cell.
+	    //tail as the first cell.
 	    snake.unshift(tail);
 
-	    //For each element of the array create a square using the bodySnake function we created before.
+	    //each element of the array create a square using the bodySnake
 	    for (var i = 0; i < snake.length; i++) {
 	    	/*if(snake[1].x!==snake[0].x)
 	        	bodySnake(snake[i].x+(i*snakeSize), snake[i].y);
@@ -160,12 +152,12 @@ var snake, tail;
 
 	    createFood(food.x, food.y);
 
-	    //Put the score text.
+	    //the score text.
 	    scoreText();
 	}
     drawSnake();
     randomizeFood();
-    gameloop = setInterval(paint, 80);
+    gameloop = setInterval(paint, 90);
     //createFood(food.x, food.y);
     //scoreText();
     /*bodySnake(5,5);
