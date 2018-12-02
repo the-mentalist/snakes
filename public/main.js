@@ -70,8 +70,8 @@ var complexity = 1;
     }
     var randomizeFood = function() {
           food = {
-            x: Math.floor(Math.random()*ctx.canvas.width),
-            y: Math.floor(Math.random()*ctx.canvas.height)
+            x: Math.floor((Math.random()*ctx.canvas.width) - 1),
+            y: Math.floor((Math.random()*ctx.canvas.height) -1)
         }
         
         //check for snakes' body
